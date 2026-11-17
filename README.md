@@ -4,7 +4,7 @@
 
 <p align="center">
   <a href="https://github.com/Team-Resurgent/R3muxTool/blob/main/LICENSE.md"><img src="https://img.shields.io/badge/License-GPLv3-blue.svg" alt="License: GPL v3"></a>
-  <a href="https://github.com/Team-Resurgent/R3muxTool/actions/workflows/build.yml"><img src="https://github.com/Team-Resurgent/R3muxTool/actions/workflows/build.yml/badge.svg" alt="Build"></a>
+  <a href="https://github.com/Team-Resurgent/R3muxTool/actions/workflows/build.yml"><img src="https://github.com/Team-Resurgent/R3muxTool/actions/workflows/build.yml/badge.svg?branch=main" alt="Build"></a>
   <a href="https://discord.gg/VcdSfajQGK"><img src="https://img.shields.io/badge/chat-on%20discord-7289da.svg?logo=discord" alt="Discord"></a>
 </p>
 
