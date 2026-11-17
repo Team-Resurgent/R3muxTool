@@ -72,6 +72,7 @@ private:
     void FillRect( float x, float y, float w, float h, D3DCOLOR color );
     void DrawBar( float x, float y, int value, bool selected, bool enabled );
     void DrawBankSwitches();
+    void DrawSwitch( float x, float y, bool known, bool on );
 
     CXBFont m_Font;
 
@@ -85,6 +86,9 @@ private:
     bool  m_SwitchesValid;     // false while software banking is active
     BYTE  m_Switches;
     float m_SwitchPollTime;
+    bool  m_ProtectValid;      // false when TSOP / backup flash is mapped
+    bool  m_ProtectOn;
+    float m_ProtectPollTime;
 
     WCHAR m_Status[96];
     float m_StatusTime;
@@ -107,7 +111,10 @@ CR3muxTool::CR3muxTool()
       m_X3Present( false ),
       m_SwitchesValid( false ),
       m_Switches( 0 ),
-      m_SwitchPollTime( -1.0f )
+      m_SwitchPollTime( -1.0f ),
+      m_ProtectValid( false ),
+      m_ProtectOn( false ),
+      m_ProtectPollTime( -1.0f )
 {
     memset( m_LcdShadow, 0, sizeof( m_LcdShadow ) );
     m_Status[0] = 0;
@@ -189,6 +196,13 @@ HRESULT CR3muxTool::FrameMove()
         m_SwitchesValid = m_X3Present && Xecuter::ReadBankSwitches( &m_Switches );
     }
 
+    // The protect check sends the flash a command sequence, so do it less often.
+    if( m_fAppTime - m_ProtectPollTime > 1.0f || m_ProtectPollTime < 0.0f )
+    {
+        m_ProtectPollTime = m_fAppTime;
+        m_ProtectValid = m_X3Present && Xecuter::ReadWriteProtect( &m_ProtectOn );
+    }
+
     XBGAMEPAD_EVENT ev = m_DefaultGamepad.Event;
 
     switch( ev )
@@ -265,28 +279,36 @@ void CR3muxTool::DrawBar( float x, float y, int value, bool selected, bool enabl
         FillRect( x, y, w * value / 100.0f, h, fill );
 }
 
-// A 4-way DIP switch like the X3's bank selector, with the bank it selects.
-// Switch 1 is bit 0 of the value and reads 0 when ON (knob up).
+// One DIP slot; knob up = ON.
+void CR3muxTool::DrawSwitch( float x, float y, bool known, bool on )
+{
+    const float slotW = 16, slotH = 32;
+    FillRect( x, y, slotW, slotH, 0xff1a1a1a );
+    if( !known )
+        return;
+    float knobH = slotH * 0.5f - 2;
+    FillRect( x + 2, on ? y + 2 : y + slotH - 2 - knobH, slotW - 4, knobH, 0xfff2f2f2 );
+}
+
+// A 4-way DIP switch like the X3's bank selector, with the bank it selects,
+// and the write-protect switch beside it in blue.
+// Bank switch 1 is bit 0 of the value and reads 0 when ON (knob up).
 void CR3muxTool::DrawBankSwitches()
 {
-    const float bodyX = 470, bodyY = 26, bodyW = 106, bodyH = 46;
+    const float bodyX = 432, bodyY = 26, bodyW = 106, bodyH = 46;
     const float slotW = 16, slotH = 32, gap = 9;
     const float slotX0 = bodyX + ( bodyW - ( 4 * slotW + 3 * gap ) ) * 0.5f;
     const float slotY = bodyY + ( bodyH - slotH ) * 0.5f;
 
     bool live = m_SwitchesValid;
     FillRect( bodyX, bodyY, bodyW, bodyH, live ? 0xffc0262c : 0xff4a3436 );   // red DIP body
-
     for( int i = 0; i < 4; ++i )
-    {
-        float x = slotX0 + i * ( slotW + gap );
-        FillRect( x, slotY, slotW, slotH, 0xff1a1a1a );
-        if( !live )
-            continue;
-        bool on = ( m_Switches & ( 1 << i ) ) == 0;
-        float knobH = slotH * 0.5f - 2;
-        FillRect( x + 2, on ? slotY + 2 : slotY + slotH - 2 - knobH, slotW - 4, knobH, 0xfff2f2f2 );
-    }
+        DrawSwitch( slotX0 + i * ( slotW + gap ), slotY, live, ( m_Switches & ( 1 << i ) ) == 0 );
+
+    // Protect switch
+    const float protX = bodyX + bodyW + 8, protW = 576 - protX;
+    FillRect( protX, bodyY, protW, bodyH, m_ProtectValid ? 0xff2a6fdb : 0xff34404a );   // blue body
+    DrawSwitch( protX + ( protW - slotW ) * 0.5f, slotY, m_ProtectValid, m_ProtectOn );
 
     WCHAR buf[64];
     if( !m_X3Present )
@@ -303,9 +325,12 @@ void CR3muxTool::DrawBankSwitches()
         buf[n] = 0;
     }
 
+    const WCHAR* protText = !m_ProtectValid ? L"Protect ?" : ( m_ProtectOn ? L"Protect ON" : L"Protect off" );
+    D3DCOLOR protColor = !m_ProtectValid ? 0xff8fa8c0 : ( m_ProtectOn ? 0xffff7a5a : 0xff7fe07f );
+
     m_Font.Begin();
-    m_Font.DrawText( bodyX - 14, 24, 0xff8fa8c0, L"Bank switches", XBFONT_RIGHT );
-    m_Font.DrawText( bodyX - 14, 52, live ? 0xffffcc00 : 0xff8fa8c0, buf, XBFONT_RIGHT );
+    m_Font.DrawText( bodyX - 14, 24, live ? 0xffffcc00 : 0xff8fa8c0, buf, XBFONT_RIGHT );
+    m_Font.DrawText( bodyX - 14, 52, protColor, protText, XBFONT_RIGHT );
     m_Font.End();
 }
 

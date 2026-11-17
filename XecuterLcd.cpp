@@ -152,6 +152,31 @@ bool Xecuter::ReadBankSwitches( BYTE* value )
     return true;
 }
 
+bool Xecuter::ReadWriteProtect( bool* protectOn )
+{
+    // Under software banking CONTROL reads back the flash routing; if the TSOP
+    // (0x20) or backup flash (0x80) is selected, the ID read would not reach
+    // the X3's main flash.
+    if( InByte( REG_STATUS ) & STATUS_SOFTCONTROL )
+    {
+        if( InByte( REG_CONTROL ) & ( 0x20 | 0x80 ) )
+            return false;
+    }
+
+    // AMD-style autoselect: unlock, 0x90, read manufacturer / device ID, reset.
+    // Read-only: nothing is erased or written. Ported from PrometheOS
+    // modchipXecuter::checkWriteProtect().
+    volatile BYTE* flash = (volatile BYTE*)0xFF000000;
+    flash[0x5555] = 0xAA;
+    flash[0x2AAA] = 0x55;
+    flash[0x5555] = 0x90;
+    BYTE devId = flash[1];
+    flash[0] = 0xF0;
+
+    *protectOn = ( devId != 0xAD && devId != 0x92 );
+    return true;
+}
+
 const char* Xecuter::BankName( BYTE value )
 {
     static const char* const names[16] =

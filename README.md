@@ -39,6 +39,10 @@ is ported from [PrometheOS](https://github.com/Team-Resurgent/PrometheOS-Firmwar
   size they select (e.g. *Bank 1-4 (1M)*), updated live as you flip them. It shows
   *Software banking* when a BIOS has taken over banking, and *No X3 detected* when no
   chip answers.
+- **Write protect**: the protect switch, drawn in blue beside the bank switches. There is
+  no register for it, so it is detected the way PrometheOS does it: with protect ON, the
+  flash ignores the read-only chip-ID command. It shows *Protect ?* while the TSOP or
+  backup flash is mapped.
 - **Re-initialise LCD**: runs the HD44780 init sequence again, e.g. after hot-plugging
   the display.
 

@@ -58,6 +58,12 @@ namespace Xecuter
     // then reads back the soft bank state rather than the switches.
     bool ReadBankSwitches( BYTE* value );
 
+    // Write-protect switch. There is no register for it: with protect ON the
+    // X3 ignores flash commands, so the chip-ID read (as PrometheOS does it)
+    // does not answer. Returns false when it can't tell, i.e. the TSOP or
+    // backup flash is mapped instead of the X3's main flash.
+    bool ReadWriteProtect( bool* protectOn );
+
     // Name of the bank a switch value selects, e.g. "Bank 1-4", and its size.
     const char* BankName( BYTE value );
     const char* BankSize( BYTE value );
