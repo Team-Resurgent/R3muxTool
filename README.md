@@ -17,6 +17,10 @@
   <a href="https://github.com/Team-Resurgent/R3muxTool/releases/latest"><img src="https://img.shields.io/badge/download-latest-brightgreen.svg?style=for-the-badge&logo=github" alt="Download"></a>
 </p>
 
+<p align="center">
+  <img src="images/screenshot.png" alt="R3muxTool running in xemu" width="640">
+</p>
+
 A small original Xbox title for consoles with a **Team Xecuter 3** modchip (or a
 chip that emulates one, such as Modxo / ModXover). It drives the HD44780 character LCD
 on the X3's display header and reads the chip's bank switches. It's built with
