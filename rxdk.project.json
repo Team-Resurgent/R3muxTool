@@ -1,0 +1,84 @@
+{
+  "name": "R3muxTool",
+  "defaultConfiguration": "Debug",
+  "configurations": {
+    "Debug": {
+      "configuration": "debug",
+      "sources": [
+        "R3muxTool.cpp",
+        "XecuterLcd.cpp",
+        "Common/Src/xbapp.cpp",
+        "Common/Src/xbfont.cpp",
+        "Common/Src/xbinput.cpp",
+        "Common/Src/xbprofiling.cpp",
+        "Common/Src/xbresource.cpp",
+        "Common/Src/xbutil.cpp"
+      ],
+      "resources": [ "Font.rdf" ],
+      "libraries": [
+        "libxbdmd.lib", "libxapid.lib", "libd3d8d.lib", "libd3dx8d.lib", "libxgraphicsd.lib",
+        "libdsoundd.lib", "libkerneld.lib", "libcd.lib", "libcppd.lib", "libcompatd.lib"
+      ],
+      "includePaths": [ "Common/Include" ],
+      "defines": [ "_USE_XGMATH", "XBOX_SAMPLE" ],
+      "deployPaths": [ "Media" ],
+      "createIso": true,
+      "forceCopy": false,
+      "imageBuild": {
+        "stackSize": 65536,
+        "debug": true,
+        "noLogo": true,
+        "noLibWarn": true,
+        "limitMemory": false,
+        "dontModifyHardDisk": false,
+        "dontMountUtilityDrive": true,
+        "formatUtilityDrive": false,
+        "testId": "0x52334d58",
+        "testName": "R3muxTool",
+        "testVersion": "4096",
+        "titleImage": "Common/rxdk-titleimage.xbx",
+        "defaultSaveImage": "Common/rxdk-saveimage.xbx"
+      },
+      "outputDir": "out/Debug"
+    },
+    "Release": {
+      "configuration": "release",
+      "sources": [
+        "R3muxTool.cpp",
+        "XecuterLcd.cpp",
+        "Common/Src/xbapp.cpp",
+        "Common/Src/xbfont.cpp",
+        "Common/Src/xbinput.cpp",
+        "Common/Src/xbprofiling.cpp",
+        "Common/Src/xbresource.cpp",
+        "Common/Src/xbutil.cpp"
+      ],
+      "resources": [ "Font.rdf" ],
+      "libraries": [
+        "libxapi.lib", "libd3d8.lib", "libd3dx8.lib", "libxgraphics.lib",
+        "libdsound.lib", "libkernel.lib", "libc.lib", "libcpp.lib", "libcompat.lib"
+      ],
+      "includePaths": [ "Common/Include" ],
+      "defines": [ "_USE_XGMATH", "XBOX_SAMPLE" ],
+      "deployPaths": [ "Media" ],
+      "createIso": true,
+      "forceCopy": false,
+      "imageBuild": {
+        "stackSize": 65536,
+        "debug": false,
+        "noLogo": true,
+        "noLibWarn": true,
+        "limitMemory": false,
+        "dontModifyHardDisk": false,
+        "dontMountUtilityDrive": true,
+        "formatUtilityDrive": false,
+        "testId": "0x52334d58",
+        "testName": "R3muxTool",
+        "testVersion": "4096",
+        "titleImage": "Common/rxdk-titleimage.xbx",
+        "defaultSaveImage": "Common/rxdk-saveimage.xbx"
+      },
+      "outputDir": "out/Release"
+    }
+  }
+}

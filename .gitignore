@@ -1,0 +1,6 @@
+out/
+Media/*.xpr
+*.err
+Xbox/
+.vs/
+Font.h

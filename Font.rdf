@@ -1,0 +1,15 @@
+// Packed font resource (built by bundler).
+out_packedresource Media\Font.xpr
+out_error          Font.err
+
+Texture Font
+{
+   Source      Common\Media\Fonts\Arial_16.tga
+   Format      D3DFMT_A4R4G4B4
+   Levels      1
+}
+
+UserData FontData
+{
+   DataFile Common\Media\Fonts\Arial_16.abc
+}
